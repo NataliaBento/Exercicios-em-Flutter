@@ -108,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      // Criação dos quadrados usando GridView
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: GridView.builder(
