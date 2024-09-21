@@ -9,89 +9,127 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return  const MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Hello World'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  void _decrementCounter() {
-    setState(() {
-      _counter--;
-    });
-  }
+  Color _selectedColor = Colors.white; // Cor inicial dos quadrados
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: const Text('Clínica Ágil'),
+
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      drawer: Drawer(
+        backgroundColor: Colors.grey,
+        child: ListView(
           children: <Widget>[
-            const Text(
-              'Você clicou:',
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.indigo,
+              ),
+              child: Text(
+                'Selecione uma cor',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+
+            ListTile(
+              leading: const Icon(
+                Icons.format_color_fill,
+                color: Colors.pink,
+                shadows: [Shadow(color: Colors.black)],
+              ),
+              title: const Text('Rosa'),
+              onTap: () {
+                setState(() {
+                  _selectedColor = Colors.pink;
+                });
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                  Icons.format_color_fill,
+              color: Colors.black,
+              shadows: [Shadow(color: Colors.white)],),
+              title: const Text('Preto'),
+              onTap: () {
+                setState(() {
+                  _selectedColor = Colors.black;
+                });
+                Navigator.pop(context);
+              }
+            ),
+            ListTile(
+              leading: const Icon(
+                  Icons.format_color_fill,
+                color: Colors.red,
+                shadows: [Shadow(color: Colors.white)],),
+
+
+              title: const Text('Vermelho'),
+              onTap: () {
+                setState(() {
+                  _selectedColor = Colors.red;
+                });
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.format_color_fill,
+                color: Colors.blue,
+              ),
+              title: const Text('Azul'),
+              onTap: () {
+                setState(() {
+                  _selectedColor = Colors.blue;
+                });
+                Navigator.pop(context);
+              },
             ),
           ],
         ),
       ),
-      floatingActionButton: Stack(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 30.0, bottom: 16.0),
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: FloatingActionButton(
-                onPressed: _decrementCounter,
-                tooltip: 'Decrement',
-                backgroundColor: Colors.redAccent,
-                child: const Icon(Icons.remove),
-              ),
-            ),
+      // Criação dos quadrados usando GridView
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 40,
+            mainAxisSpacing: 40,
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 30.0, bottom: 16.0),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: FloatingActionButton(
-                onPressed: _incrementCounter,
-                tooltip: 'Increment',
-                backgroundColor: Colors.greenAccent,
-                child: const Icon(Icons.add),
+          itemCount: 6, // Número total de quadrados
+          itemBuilder: (BuildContext context, int index) {
+            return Container(
+              color: _selectedColor,
+              child: const Center(
+                child: Text(
+                  'Clínica Ágil',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ),
-            ),
-          ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }
