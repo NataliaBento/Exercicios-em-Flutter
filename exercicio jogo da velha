@@ -1,0 +1,129 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Jogo da Velha da Clínica Ágil',
+      theme: ThemeData(
+        primarySwatch: Color(0xffe688ca),
+      ),
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  HomePageState createState() => new HomePageState();
+}
+
+class HomePageState extends State<HomePage> {
+  List<String> board =
+      List.filled(9, ''); // Estado do tabuleiro (vazio no início)
+  bool vezX = true; // Controla se é a vez do 'X'
+  String winner = ''; // Armazena o vencedor
+
+  // Função chamada quando uma célula é clicada
+  void _handleTap(int index) {
+    if (board[index] == '' && winner == '') {
+      setState(() {
+        board[index] = vezX ? 'X' : 'O'; // Marca X ou O
+        vezX = !vezX; // Alterna a vez entre X e O
+        winner = _checkWinner(); // Verifica se há um vencedor
+      });
+    }
+  }
+
+  // Verifica se há um vencedor
+  String _checkWinner() {
+    const winningCombos = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ];
+
+    for (var combo in winningCombos) {
+      if (board[combo[0]] != '' &&
+          board[combo[0]] == board[combo[1]] &&
+          board[combo[1]] == board[combo[2]]) {
+        return board[combo[0]]; // Retorna o vencedor ('X' ou 'O')
+      }
+    }
+
+    return ''; // Sem vencedor ainda
+  }
+
+  // Reinicia o jogo
+  void _resetGame() {
+    setState(() {
+      board = List.filled(9, ''); // Reseta o tabuleiro
+      vezX = true; // Começa com o X
+      winner = ''; // Limpa o vencedor
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Jogo da Velha'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: _resetGame, // Botão para reiniciar o jogo
+          ),
+        ],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, // Tabuleiro 3x3
+              ),
+              itemCount: 9, // Número total de células
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    _handleTap(index); // Chama a função ao clicar na célula
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(), // Adiciona borda às células
+                    ),
+                    child: Center(
+                      child: Text(
+                        board[index], // Mostra X ou O
+                        style: TextStyle(
+                          color: board[index] == 'X' ? Colors.red : Colors.blue,
+                          fontSize: 48, // Tamanho do texto
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          if (winner != '') // Se houver um vencedor
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Parabéns, $winner venceu!', // Exibe a mensagem de vitória
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
